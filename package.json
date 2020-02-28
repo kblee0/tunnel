@@ -1,0 +1,15 @@
+{
+  "name": "tunnel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tunne.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "tunnel-ssh": "^4.1.4"
+  }
+}
