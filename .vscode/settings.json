@@ -1,6 +1,5 @@
 {
     "eslint.validate": [
-        {"language": "javascript"},
-        {"language": "json"},
+        "javascript"
     ]
 }
