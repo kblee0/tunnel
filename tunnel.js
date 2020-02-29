@@ -1,36 +1,22 @@
-var configList = [
-    {
-        username: 'ops',
-        password: 'jkl123#',
-        host: '192.168.4.12',
-        port: 22,
-        dstHost: 'localhost',
-        dstPort: 22,
-        localHost: '0.0.0.0',
-        localPort: 8888,
-    },
-    {
-        username: 'ops',
-        password: 'jkl123#',
-        host: 'localhost',
-        port: 8888,
-        dstHost: 'localhost',
-        dstPort: 8080,
-        localPort: 8080,
-    },
-];
-
 var tunnel = require('tunnel-ssh');
 var fs = require('fs');
 var log = require('./tlog');
 
-//log.info('load config: ' + process.argv[2]);
-
-//var config = JSON.parse(fs.readFileSync(process.argv[2]));
+log.info('load config: ' + process.argv[2]);
+try {
+    var configList = JSON.parse(fs.readFileSync(process.argv[2]));
+} catch (err) {
+    log.error(process.argv[2], 'file parsing error.\n', err);
+    process.exit(1);
+}
 
 function start_tunnel(config) {
     if (config.privateKey === undefined && config.privateKeyFile != undefined) {
-        config.privateKey = fs.readFileSync(config.privateKeyFile);
+        try {
+            config.privateKey = fs.readFileSync(config.privateKeyFile);
+        } catch (err) {
+            log.error(config.privateKeyFile, 'file read error.\n', err);
+        }
     }
     if (config.name === undefined) {
         if (config.localHost == undefined) {
@@ -57,8 +43,6 @@ function start_tunnel(config) {
     });
     return server;
 }
-
-// log.log('Starting tunnel', config.name);
 
 configList.forEach(config => {
     start_tunnel(config);

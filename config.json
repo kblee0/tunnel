@@ -1,0 +1,21 @@
+[
+    {
+        "username": "ops",
+        "privateKeyFile": "/users/kblee/.ssh/id_rsa",
+        "host": "192.168.4.12",
+        "port": 22,
+        "dstHost": "localhost",
+        "dstPort": 22,
+        "localHost": "0.0.0.0",
+        "localPort": 8888
+    },
+    {
+        "username": "ops",
+        "privateKeyFile": "/users/kblee/.ssh/id_rsa",
+        "host": "localhost",
+        "port": 8888,
+        "dstHost": "localhost",
+        "dstPort": 8080,
+        "localPort": 8080
+    }
+]
