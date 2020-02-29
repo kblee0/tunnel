@@ -13,7 +13,7 @@ module.exports = {
         ecmaVersion: 2018,
     },
     rules: {
-        "indent": ["error", 4, { "SwitchCase": 1 }],
+        'indent': ['error', 4, { 'SwitchCase': 1 }],
         'no-unused-vars': 1,
         'no-use-before-define': 1,
         'no-redeclare': 1,
