@@ -31,6 +31,9 @@ function start_tunnel(config) {
             config.name = config.localHost + ':' + config.localPort;
         }
     }
+    if (config.keepAlive === undefined) {
+        config.keepAlive = true;
+    }
     var server = tunnel(config, function (error) {
         if (error) {
             log.error(config.name, 'Server failed to start.', error);
