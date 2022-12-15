@@ -6,6 +6,7 @@
     "author": "kblee0",
     "license": "ISC",
     "dependencies": {
+        "console-stamp": "^3.0.6",
         "fs": ">=0.0.1",
         "json5": ">=2.1.3",
         "nodaemon": ">=0.0.5",
