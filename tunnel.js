@@ -1,18 +1,21 @@
 var tunnel = require('tunnel-ssh');
 var fs = require('fs');
-var log = require('./tlog');
 var JSON5 = require('json5');
+require('console-stamp')(console, {
+    format: ':date(yyyy/mm/dd HH:MM:ss.l) :label(7)'
+});
+
 var config = 'config.json';
 
 if (process.argv[2] !== undefined) {
     config = process.argv[2];
 }
 
-log.info('config file name:', config);
+console.info('config file name:', config);
 try {
     var configList = JSON5.parse(fs.readFileSync(config));
 } catch (err) {
-    log.error(config, 'file parsing failed.\n', err);
+    console.error(config, 'file parsing failed.\n', err);
     process.exit(1);
 }
 
@@ -21,7 +24,7 @@ function start_tunnel(config) {
         try {
             config.privateKey = fs.readFileSync(config.privateKeyFile);
         } catch (err) {
-            log.error(config.privateKeyFile, 'file read error.\n', err);
+            console.error(config.privateKeyFile, 'file read error.\n', err);
         }
     }
     if (config.name === undefined) {
@@ -36,20 +39,12 @@ function start_tunnel(config) {
     }
     var server = tunnel(config, function (error) {
         if (error) {
-            log.error(config.name, 'Server failed to start.', error);
-            process.exit(1);
+            console.error(config.name, 'Tunnel server failed to start.', error);
         }
-        log.info(config.name, 'Tunnel server has been started.');
+        console.info(config.name, 'Tunnel server has been started.');
     });
     server.on('error', function (error) {
         log.error(config.name, 'an error has occurred.\n', error);
-        server.emit('close');
-    });
-    // The server shutdown when all clients are disconnected.
-    server.on('close', function () {
-        if (!config.keepAlive) {
-            log.info(config.name, 'the server has been shutdown.');
-        }
     });
     return server;
 }
