@@ -11,10 +11,25 @@ if (process.argv[2] !== undefined) {
     configFileName = process.argv[2];
 }
 
+console.info('Tunnel server started');
 console.info('config file name:', configFileName);
 
+let config = {
+    defaultOptions: {
+        tunnelOptions: {},
+        sshOptions: {}
+    },
+    tunnels: [
+        {
+            serverOptions: {},
+            forwardOptions: {},
+            sshOptions: {}
+        }
+    ]
+};
+
 try {
-    var config = JSON5.parse(fs.readFileSync(configFileName));
+    config = JSON5.parse(fs.readFileSync(configFileName).toString());
 } catch (err) {
     console.error(configFileName, 'file parsing failed.\n', err);
     process.exit(1);
@@ -38,7 +53,7 @@ config.tunnels.forEach((tunnelOptions) => {
             server.on('error',(e)=> {
                 console.log(tunnelOptions.name, "server error.", e);
             });
-            conn.on('error', (e)=>{
+            conn.on('error',(e)=>{
                 console.log(tunnelOptions.name, "connection error.", e);
             });
         });
