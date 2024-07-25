@@ -1,54 +1,45 @@
-var tunnel = require('tunnel-ssh');
-var fs = require('fs');
-var JSON5 = require('json5');
+const tunnel = require('tunnel-ssh');
+const fs = require('fs');
+const JSON5 = require('json5');
 require('console-stamp')(console, {
     format: ':date(yyyy/mm/dd HH:MM:ss.l) :label(7)'
 });
 
-var config = 'config.json';
+let configFileName = 'config.json';
 
 if (process.argv[2] !== undefined) {
-    config = process.argv[2];
+    configFileName = process.argv[2];
 }
 
-console.info('config file name:', config);
+console.info('config file name:', configFileName);
+
 try {
-    var configList = JSON5.parse(fs.readFileSync(config));
+    var config = JSON5.parse(fs.readFileSync(configFileName));
 } catch (err) {
-    console.error(config, 'file parsing failed.\n', err);
+    console.error(configFileName, 'file parsing failed.\n', err);
     process.exit(1);
 }
 
-function start_tunnel(config) {
-    if (config.privateKey === undefined && config.privateKeyFile != undefined) {
-        try {
-            config.privateKey = fs.readFileSync(config.privateKeyFile);
-        } catch (err) {
-            console.error(config.privateKeyFile, 'file read error.\n', err);
-        }
-    }
-    if (config.name === undefined) {
-        if (config.localHost == undefined) {
-            config.name = 'localhost:' + config.localPort;
-        } else {
-            config.name = config.localHost + ':' + config.localPort;
-        }
-    }
-    if (config.keepAlive === undefined) {
-        config.keepAlive = true;
-    }
-    var server = tunnel(config, function (error) {
-        if (error) {
-            console.error(config.name, 'Tunnel server failed to start.', error);
-        }
-        console.info(config.name, 'Tunnel server has been started.');
-    });
-    server.on('error', function (error) {
-        log.error(config.name, 'an error has occurred.\n', error);
-    });
-    return server;
-}
-
-configList.forEach((config) => {
-    start_tunnel(config);
+config.tunnels.forEach((tunnelOptions) => {
+    tunnel.createTunnel(
+        config.defaultOptions.tunnelOptions,
+        tunnelOptions.serverOptions,
+        tunnelOptions.sshOptions ? tunnelOptions.sshOptions : config.defaultOptions.sshOptions,
+        tunnelOptions.forwardOptions)
+        .then(([server, conn], error)=>{
+            if(tunnelOptions.name === undefined || tunnelOptions.name === null) {
+                tunnelOptions.name = `${tunnelOptions.serverOptions.host}:${tunnelOptions.serverOptions.port} -> ${tunnelOptions.forwardOptions.dstAddr}:${tunnelOptions.forwardOptions.dstPort}`;
+            }
+            if(error) {
+                console.error(fo.name, "createTunnel error", error);
+                process.exit(1);
+            }
+            console.info('createTunnel started.::', tunnelOptions.name);
+            server.on('error',(e)=> {
+                console.log(fo.name, "server error.", e);
+            });
+            conn.on('error', (e)=>{
+                console.log(fo.name, "connection error.", e);
+            });
+        });
 });

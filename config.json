@@ -1,21 +1,36 @@
-[
-    {
-        "username": "ops",
-        "privateKeyFile": "/users/kblee/.ssh/id_rsa",
-        "host": "192.168.4.12",
-        "port": 22,
-        "dstHost": "localhost",
-        "dstPort": 22,
-        "localHost": "0.0.0.0",
-        "localPort": 8888
+{
+    "defaultOptions": {
+        "tunnelOptions": {
+            "autoClose": false
+        },
+        "sshOptions": {
+            "host": "192.168.4.12",
+            "port": 22,
+            "username": "ops",
+            "password": "jkl123!@#",
+            "privateKeyFile": "/users/kblee/.ssh/id_rsa"
+        }
     },
-    {
-        "username": "ops",
-        "privateKeyFile": "/users/kblee/.ssh/id_rsa",
-        "host": "localhost",
-        "port": 8888,
-        "dstHost": "localhost",
-        "dstPort": 8080,
-        "localPort": 8080
-    }
-]
+    "tunnels": [
+        {
+            "serverOptions": {
+                "host": "0.0.0.0",
+                "port": 8888
+            },
+            "forwardOptions": {
+                "dstAddr": "www.google.com",
+                "dstPort": 80
+            }
+        },
+        {
+            "serverOptions": {
+                "host": "0.0.0.0",
+                "port": 7777
+            },
+            "forwardOptions": {
+                "dstAddr": "www.yahoo.com",
+                "dstPort": 80
+            }
+        }
+    ]
+}
