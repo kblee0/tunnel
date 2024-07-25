@@ -31,15 +31,15 @@ config.tunnels.forEach((tunnelOptions) => {
                 tunnelOptions.name = `${tunnelOptions.serverOptions.host}:${tunnelOptions.serverOptions.port} -> ${tunnelOptions.forwardOptions.dstAddr}:${tunnelOptions.forwardOptions.dstPort}`;
             }
             if(error) {
-                console.error(fo.name, "createTunnel error", error);
+                console.error(tunnelOptions.name, "createTunnel error", error);
                 process.exit(1);
             }
-            console.info('createTunnel started.::', tunnelOptions.name);
+            console.info('Tunnel started.::', tunnelOptions.name);
             server.on('error',(e)=> {
-                console.log(fo.name, "server error.", e);
+                console.log(tunnelOptions.name, "server error.", e);
             });
             conn.on('error', (e)=>{
-                console.log(fo.name, "connection error.", e);
+                console.log(tunnelOptions.name, "connection error.", e);
             });
         });
 });
